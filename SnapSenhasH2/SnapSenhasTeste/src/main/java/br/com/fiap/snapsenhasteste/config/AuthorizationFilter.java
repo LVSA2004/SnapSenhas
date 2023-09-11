@@ -26,8 +26,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     ClienteRepository repository;
 
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

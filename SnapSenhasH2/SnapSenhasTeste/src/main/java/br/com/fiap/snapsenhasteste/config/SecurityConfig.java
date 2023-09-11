@@ -24,14 +24,13 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests()
-                    .requestMatchers(HttpMethod.POST, "/cliente/registrar").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/cliente/login").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/snapsenhas/gerador").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/snapsenhas/pesquisa/{id}").permitAll()
-                    .requestMatchers(HttpMethod.DELETE, "/snapsenhas/deletar/{id}").permitAll()
-                    .requestMatchers(HttpMethod.PUT, "/snapsenhas/atualizar/{id}").permitAll()
-                    .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                    .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.POST, "/registrar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/snapsenhas/gerador").permitAll()
+                .requestMatchers(HttpMethod.GET, "/snapsenhas/pesquisa/{id}").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/snapsenhas/deletar/{id}").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/snapsenhas/atualizar/{id}").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -49,6 +48,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 }
