@@ -1,10 +1,12 @@
 package br.com.fiap.snapsenhasteste.models;
 
-import br.com.fiap.snapsenhasteste.controllers.ClienteController;
 import br.com.fiap.snapsenhasteste.controllers.GeradorController;
+
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 
@@ -25,8 +27,9 @@ public class GeradorDeSenhas {
     @Column(name = "gd_senha")
     private String senha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cliente")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID_CLIENTE",
+            foreignKey = @ForeignKey(name = "FK_CLIENTE_SENHA", value = ConstraintMode.CONSTRAINT))
     private Cliente cliente;
 
     public EntityModel<GeradorDeSenhas> toModel() {

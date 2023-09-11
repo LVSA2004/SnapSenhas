@@ -25,8 +25,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.util.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
 @RestController
-@RequestMapping("snapsenhas/gerador")
+@RequestMapping("snapsenhas")
+@Tag(name = "GeradorSenha", description = "Gerador de Senhas dos Clientes")
 public class GeradorController {
     Logger log = LoggerFactory.getLogger(GeradorController.class);
     @Autowired
@@ -46,24 +54,7 @@ public class GeradorController {
         return assembler.toModel(repo.findAll(pageable));
     }
 
-    @GetMapping("/pesquisa")
-    public Page<GeradorDeSenhas> search(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction) {
-        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
-        Pageable pageable = PageRequest.of(page, size, sortDirection, sort);
-
-        if (search == null) {
-            return repo.findAll(pageable);
-        } else {
-            return repo.findBySenhaContainingIgnoreCase(search, pageable);
-        }
-    }
-
-    @GetMapping("{id}")
+    @GetMapping("/pesquisa/{id}")
     public EntityModel<GeradorDeSenhas> show(@PathVariable Long id) {
         log.info("buscar senha com id: " + id);
         GeradorDeSenhas senha = repo.findById(id).orElseThrow(() ->
@@ -71,7 +62,14 @@ public class GeradorController {
         return senha.toModel();
     }
 
-    @PostMapping
+    @GetMapping("/gerador")
+    @Operation(
+            summary = "Gerar uma Senha"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Senha Gerada com Sucesso com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Algo deu errado, a senha não foi gerada")
+    })
     public ResponseEntity<GeradorDeSenhas> create(@Valid GeradorDeSenhas geradorDeSenhas) {
         List<String> letras = Arrays.asList(Todos_Caracteres.split(""));
         Collections.shuffle(letras);
@@ -87,7 +85,7 @@ public class GeradorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(geradorDeSenhas);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<GeradorDeSenhas> update(@PathVariable Long id, @RequestBody  @Valid GeradorDeSenhas senhaAtualizado) {
         log.info("atualizar o senha com id: " + id);
         GeradorDeSenhas senha = repo.findById(id).orElseThrow(() ->
@@ -96,7 +94,7 @@ public class GeradorController {
         repo.save(senha);
         return ResponseEntity.ok(senha);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<GeradorDeSenhas> destroy(@PathVariable Long id) {
         log.info("deletar senha com o id: " + id);
 

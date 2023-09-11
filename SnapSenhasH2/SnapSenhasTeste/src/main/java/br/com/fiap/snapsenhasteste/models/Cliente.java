@@ -1,48 +1,70 @@
 package br.com.fiap.snapsenhasteste.models;
 
-import br.com.fiap.snapsenhasteste.controllers.ClienteController;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
+@Data
+@Builder
 
-@Entity
-@Table(name="tb_cliente")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Cliente {
+
+@Entity
+@Table(name="TB_CLIENTE")
+public class Cliente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
+    @Column(name = "ID_CLIENTE")
     private Long id;
-    @Column(name = "cl_nome")
+    @Column(name = "NOME")
     private String nome;
-    @Column(name = "cl_telefone")
+    @Column(name = "TELEFONE")
     private String telefone;
-    @Column(name = "cl_email")
+    @Column(name = "EMAIL")
     private String email;
-    @Column(name = "cl_login")
-    private String login;
-    @Column(name = "cl_senha")
+    @Column(name = "SENHA")
     private String senha;
-
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GeradorDeSenhas> senhas;
-
-    public EntityModel<Cliente> toModel() {
-        return EntityModel.of(
-                this,
-                linkTo(methodOn(ClienteController.class).show(id)).withSelfRel(),
-                linkTo(methodOn(ClienteController.class).destroy(id)).withRel("delete"),
-                linkTo(methodOn(ClienteController.class).index(Pageable.unpaged())).withRel("all")
-        );
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(() -> "ROLE_CLIENTE");
     }
+
+    @Override
+    public String getPassword() {
+
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
 
