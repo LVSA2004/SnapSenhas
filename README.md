@@ -89,22 +89,42 @@ API da aplicação de geração de senhas
 ---
 ### Perfil
 
-**Exemplo de corpo de requisição**
+## Cadastro com Autenticação e Token ╹Usuário╷ **`/registrar`**:
 
+#### POST ➡️
 
-`POST`/gestanca/api/perfil
-
-|código | descrição
-|- | -
-|200 | Perfil mostrado
-|408 | não pode carregar o perfil
-
-
+**Exemplo 👇**
 ```js
 {
-    perfil_id: 1,
-    Nome: "Henrique Freitas"1,
-    E-mail: "projetosnap@gmail.com",
-    Telefone: "(11)4002-8922",
+     "nome": "Luan Sá",
+	 "telefone": "11 959540882",
+	 "email": "lvss@gmail.com",
+	 "login": "lvss",
+	 "senha" : "02072004"
 }
 ```
+**Saída 👇**
+
+|  | <font color="#aa31f5">código</font> | <font color="#e0af0d">descrição</font> |
+|:------:|:------:|-----------|
+✔️ | `201` | Usuário cadastrado com sucesso.
+❌ | `403` | Não foi possível cadastrar o usuário.
+
+### Login com validação de Token ╹Usuário╷ **`/login`**:
+
+#### POST ➡️
+
+**Exemplo 👇**
+```js
+{
+	"email": "lvss@gmail.com",
+	"senha": "02072004"
+}
+```
+
+**Saída 👇**
+
+|  | <font color="#aa31f5">código</font> | <font color="#e0af0d">descrição</font> |
+|:------:|:------:|-----------|
+| ✔️ | `201` | Login validado com sucesso.
+| ❌ | `403` | Não foi possivel validar o login.
